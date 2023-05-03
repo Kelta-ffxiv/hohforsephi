@@ -10,6 +10,7 @@
 <script>
 
 
+import Highcharts from 'highcharts';
 
 // import {Chart} from 'highcharts-vue'
 
@@ -17,14 +18,15 @@ export default {
   name: 'App',
   computed: {
     chartOptions()  {
-      console.log(this)
-      console.log(this.xAxis)
       return {
+    chart: {
+        zoomType: 'xy'
+    },
     title: {
-        text: 'Snow depth at Vikjafjellet, Norway'
+        text: 'HoH performance'
     },
     subtitle: {
-        text: 'Irregular time data in Highcharts JS'
+        text: 'for sephiii <3'
     },
     xAxis: {
         type: 'datetime',
@@ -34,18 +36,63 @@ export default {
         },
         title: {
             text: 'Date'
-        }
-    },
-    yAxis: {
-        title: {
-            text: 'Snow depth (m)'
         },
     },
-    tooltip: {
-        headerFormat: '<b>{series.name}</b><br>',
-        pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
-    },
+    yAxis: [{
+        min: 90,
+        max: 100,
+        opposite: true,
 
+        labels: {
+            format: '{value}',
+            style: {
+                color: Highcharts.getOptions().colors[2]
+            }
+        },
+        title: {
+            text: 'Floor',
+            style: {
+                color: Highcharts.getOptions().colors[2]
+            }
+        },
+    },{
+     
+        dashStyle: 'shortdot',
+        gridLineWidth: 0,
+        title: {
+            text: 'Score',
+            style: {
+                color: Highcharts.getOptions().colors[0]
+            }
+        },
+        labels: {
+            format: '{value}',
+            style: {
+                color: Highcharts.getOptions().colors[0]
+            }
+        }
+        
+    },{
+      
+        dashStyle: 'shortdot',
+        gridLineWidth: 0,
+        title: {
+            text: 'Kills',
+            style: {
+                color: Highcharts.getOptions().colors[1]
+            }
+        },
+        labels: {
+            format: '{value}',
+            style: {
+                color: Highcharts.getOptions().colors[1]
+            }
+        },
+    }],
+   tooltip: {
+    shared: true
+   },
+   
     plotOptions: {
         series: {
             marker: {
@@ -55,13 +102,32 @@ export default {
         }
     },
 
-    colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
+    colors: ['rgb(84, 79, 197)', 'rgb(44, 175, 254)', 'rgb(226, 114,0)', '#39F', '#06C', '#036', '#000'],
 
         series: [
           {
-            name: 'score',
+            name: 'Floor',
+            yAxis: 0,
+        type: 'column',
+            data: this.convertedHohData('floor'),
+        marker: {
+            enabled: false
+        },
+        dashStyle: 'shortdot',
+          },
+          {
+            name: 'Score',
+            yAxis: 1,
+        type: 'spline',
             data: this.convertedHohData('score')
-          }
+            
+          },
+          {
+            name: 'Kills',
+            yAxis: 2,
+        type: 'spline',
+            data: this.convertedHohData('kills')
+          },
         ]
       }
     },
@@ -77,7 +143,7 @@ export default {
   },
 
   mounted() {
-   // console.log(this.chartOptions)
+   console.log(this.chartOptions)
   },
   data() {
     return {
@@ -99,15 +165,15 @@ export default {
             min: 1000,
         },
         
-        hohdata:  [{date: Date.parse('01 05 2023'), kills: 701, score: 1203929, floor: 95},{date: Date.parse('01 06 2023'), kills: 680, score: 1186387, floor: 95}, // sample data
+        hohdata:  [{date: Date.parse('01 05 2023'), kills: 701, score: 1203929, floor: 95},{date: Date.parse('01 06 2023 00:01:00 GMT'), kills: 680, score: 1186387, floor: 95}, // sample data
       
 
-         {date: Date.parse('01 06 2023'), kills: 701, score: 1186387, floor: 95},
-         {date: Date.parse('01 08 2023'), kills: 661, score: 1157428, floor: 93},
-         {date: Date.parse('01 08 2023'), kills: 604, score: 1126350, floor: 93},
+         {date: Date.parse('01 06 2023 00:13:00 GMT'), kills: 701, score: 1186387, floor: 95},
+         {date: Date.parse('01 08 2023 00:01:00 GMT'), kills: 661, score: 1157428, floor: 93},
+         {date: Date.parse('01 08 2023 00:13:00 GMT'), kills: 604, score: 1126350, floor: 93},
          {date: Date.parse('01 23 2023'), kills: 653, score: 1162173, floor: 92},
-         {date: Date.parse('01 26 2023'), kills: 593, score: 1166895, floor: 94},
-         {date: Date.parse('01 26 2023'), kills: 668, score: 1622393, floor: 100},
+         {date: Date.parse('01 26 2023 00:01:00 GMT'), kills: 593, score: 1166895, floor: 94},
+         {date: Date.parse('01 26 2023 00:13:00 GMT'), kills: 668, score: 1622393, floor: 100},
          {date: Date.parse('02 10 2023'), kills: 940, score: 1309935, floor: 96},
          {date: Date.parse('02 14 2023'), kills: 1046, score: 1792327, floor: 100},
          {date: Date.parse('02 17 2023'), kills: 942, score: 1255503, floor: 90},
