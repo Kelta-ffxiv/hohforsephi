@@ -3,14 +3,20 @@
     <h1>HoH for sephi</h1>
   <highcharts :options="chartOptions"></highcharts>
 
-
+    <div class="switch-container">    
+    <label class="switch">
+      <input type="checkbox" v-model="completedOnly">
+      <span class="slider round"></span>
+      
+    </label>
+    Completed only
+    </div>
   </div>
 </template>
 
 <script>
 
 
-import Highcharts from 'highcharts';
 
 // import {Chart} from 'highcharts-vue'
 
@@ -18,7 +24,7 @@ export default {
   name: 'App',
   computed: {
     chartOptions()  {
-      return {
+      let lol = {
     chart: {
         zoomType: 'xy'
     },
@@ -46,13 +52,13 @@ export default {
         labels: {
             format: '{value}',
             style: {
-                color: Highcharts.getOptions().colors[2]
+                color: this.colors[3]
             }
         },
         title: {
             text: 'Floor',
             style: {
-                color: Highcharts.getOptions().colors[2]
+                color: this.colors[3]
             }
         },
     },{
@@ -62,13 +68,12 @@ export default {
         title: {
             text: 'Score',
             style: {
-                color: Highcharts.getOptions().colors[0]
+                color: this.colors[1]
             }
         },
         labels: {
-            format: '{value}',
             style: {
-                color: Highcharts.getOptions().colors[0]
+                color: this.colors[1]
             }
         }
         
@@ -79,13 +84,13 @@ export default {
         title: {
             text: 'Kills',
             style: {
-                color: Highcharts.getOptions().colors[1]
+                color: this.colors[2]
             }
         },
         labels: {
             format: '{value}',
             style: {
-                color: Highcharts.getOptions().colors[1]
+                color: this.colors[2]
             }
         },
     }],
@@ -102,7 +107,7 @@ export default {
         }
     },
 
-    colors: ['rgb(84, 79, 197)', 'rgb(44, 175, 254)', 'rgb(226, 114,0)', '#39F', '#06C', '#036', '#000'],
+    colors: this.colors,
 
         series: [
           {
@@ -130,12 +135,14 @@ export default {
           },
         ]
       }
+      console.log(lol)
+      return lol;
     },
   },
   methods: {
 
     convertedHohData(dataType) {
-      return this.hohdata.map((data) => this.convertHohData(data, dataType))
+      return this.hohdata.filter((data) => this.completedOnly ? data.floor === 100 : true).map((data) => this.convertHohData(data, dataType))
     },
     convertHohData(data, dataType) {
       return [data.date, data[dataType]]
@@ -143,28 +150,12 @@ export default {
   },
 
   mounted() {
-   console.log(this.chartOptions)
+   //console.log(this.chartOptions)
   },
   data() {
     return {
-
-        xAxis: {
-            type: 'datetime',
-            dateTimeLabelFormats: { // don't display the year
-                month: '%e. %b',
-                year: '%b'
-            },
-            title: {
-                text: 'Date'
-            }
-        },
-        yAxis: {
-            title: {
-                text: 'Snow depth (m)'
-            },
-            min: 1000,
-        },
-        
+        colors: ['rgb(180, 160, 240, 0.5)', 'rgb(44, 175, 254)', 'rgb(226, 60,0)', 'rgb(60, 50, 130, 1)', '#06C', '#036', '#000'],
+        completedOnly: false,
         hohdata:  [{date: Date.parse('01 05 2023'), kills: 701, score: 1203929, floor: 95},{date: Date.parse('01 06 2023 00:01:00 GMT'), kills: 680, score: 1186387, floor: 95}, // sample data
       
 
@@ -194,22 +185,101 @@ export default {
 </script>
 
 <style>
+
+body {
+  font-size: 0;
+  margin: 0;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: white;
+  font-size: 30px;
 }
+
+
 
 .bg {
   height: 100%;
   width: 100%;
 
+  box-sizing: border-box;
   padding-top: 60px;
+  padding: 60px;
   background: url('https://cdn.discordapp.com/attachments/1068317015347040388/1077959201571221544/ffxiv_dx11_2023-02-22_14-24-38.png');
 
       display: block;
     position: absolute;
+}
+
+.switch-container {
+  margin-top: 25px;
+    font-size: 25px;
+    /* height: 15px; */
+    vertical-align: middle;
+    line-height: 34px;
+    font-weight: 800;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
 </style>
