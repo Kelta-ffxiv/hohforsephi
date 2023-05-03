@@ -8,22 +8,121 @@
 </template>
 
 <script>
-import {Chart} from 'highcharts-vue'
+
+
+
+// import {Chart} from 'highcharts-vue'
+
 export default {
   name: 'App',
-  components: {
-    highcharts: Chart,
+  computed: {
+    chartOptions()  {
+      console.log(this)
+      console.log(this.xAxis)
+      return {
+    title: {
+        text: 'Snow depth at Vikjafjellet, Norway'
+    },
+    subtitle: {
+        text: 'Irregular time data in Highcharts JS'
+    },
+    xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: { // don't display the year
+            month: '%e. %b',
+            year: '%b'
+        },
+        title: {
+            text: 'Date'
+        }
+    },
+    yAxis: {
+        title: {
+            text: 'Snow depth (m)'
+        },
+    },
+    tooltip: {
+        headerFormat: '<b>{series.name}</b><br>',
+        pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+    },
 
-    
+    plotOptions: {
+        series: {
+            marker: {
+                enabled: true,
+                radius: 2.5
+            }
+        }
+    },
+
+    colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
+
+        series: [
+          {
+            name: 'score',
+            data: this.convertedHohData('score')
+          }
+        ]
+      }
+    },
+  },
+  methods: {
+
+    convertedHohData(dataType) {
+      return this.hohdata.map((data) => this.convertHohData(data, dataType))
+    },
+    convertHohData(data, dataType) {
+      return [data.date, data[dataType]]
+    }
+  },
+
+  mounted() {
+   // console.log(this.chartOptions)
   },
   data() {
     return {
-      chartOptions: {
-        series: [{
-          data: [1,2,3] // sample data
-        }]
+
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: { // don't display the year
+                month: '%e. %b',
+                year: '%b'
+            },
+            title: {
+                text: 'Date'
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Snow depth (m)'
+            },
+            min: 1000,
+        },
+        
+        hohdata:  [{date: Date.parse('01 05 2023'), kills: 701, score: 1203929, floor: 95},{date: Date.parse('01 06 2023'), kills: 680, score: 1186387, floor: 95}, // sample data
+      
+
+         {date: Date.parse('01 06 2023'), kills: 701, score: 1186387, floor: 95},
+         {date: Date.parse('01 08 2023'), kills: 661, score: 1157428, floor: 93},
+         {date: Date.parse('01 08 2023'), kills: 604, score: 1126350, floor: 93},
+         {date: Date.parse('01 23 2023'), kills: 653, score: 1162173, floor: 92},
+         {date: Date.parse('01 26 2023'), kills: 593, score: 1166895, floor: 94},
+         {date: Date.parse('01 26 2023'), kills: 668, score: 1622393, floor: 100},
+         {date: Date.parse('02 10 2023'), kills: 940, score: 1309935, floor: 96},
+         {date: Date.parse('02 14 2023'), kills: 1046, score: 1792327, floor: 100},
+         {date: Date.parse('02 17 2023'), kills: 942, score: 1255503, floor: 90},
+         {date: Date.parse('02 18 2023'), kills: 884, score: 1292964, floor: 94},
+         {date: Date.parse('02 20 2023'), kills: 937, score: 1234322, floor: 89},
+         {date: Date.parse('02 21 2023'), kills: 1051, score: 1373253, floor: 97},
+         {date: Date.parse('02 22 2023'), kills: 1134, score: 1816391, floor: 100},
+         {date: Date.parse('02 23 2023'), kills: 1018, score: 1790161, floor: 100},
+         {date: Date.parse('02 27 2023'), kills: 1085, score: 1395712, floor: 98},
+         {date: Date.parse('02 28 2023'), kills: 1067, score: 1798749, floor: 100},
+         {date: Date.parse('03 04 2023'), kills: 1107, score: 1819879, floor: 100},
+         {date: Date.parse('03 17 2023'), kills: 658, score: 1566964, floor: 100},
+         {date: Date.parse('03 26 2023'), kills: 678, score: 1555915, floor: 100},]
       }
-    }
+    
   }
 }
 </script>
